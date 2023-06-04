@@ -253,16 +253,9 @@ WHERE c.name = '{}'
 
 
 
-DROP VIEW IF EXISTS `under_forty`;
-
-CREATE VIEW under_forty AS
-SELECT userid, first_name, last_name, num_lent
-FROM user USE INDEX (idx_users_status)
-WHERE status = 'teacher'
-  AND birthdate >= DATE_SUB(CURDATE(), INTERVAL 40 YEAR)
-  AND num_lent >= 0
-ORDER BY num_lent DESC;
-
+DROP VIEW IF EXISTS `under_fourty`;
+CREATE VIEW under_fourty AS
+SELECT u.userid, u.first_name, u.last_name, COUNT(l.userid) AS lending_count FROM user u USE INDEX (idx_users_status) INNER JOIN lending l ON l.userid = u.userid WHERE u.status = 'teacher' AND u.birthdate >= DATE_SUB(CURDATE(), INTERVAL 40 YEAR) GROUP BY u.userid, u.first_name, u.last_name ORDER BY lending_count DESC;
 
 
 
